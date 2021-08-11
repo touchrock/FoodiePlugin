@@ -20,8 +20,12 @@ public interface FoodieConfig extends Config
     {
         List<String> phrases = new ArrayList<>();
         phrases.add("Delicious! Finally some good food!");
-        phrases.add("Ugh! Hard to fit anymore food. Maybe a beer instead...");
+        phrases.add("Ugh! Hard. to. fit. anymore. food...");
         phrases.add("Just a little snack!");
+        phrases.add("Bleh! It's raw!");
+        phrases.add("A tasty morsel that was...");
+        phrases.add("Must have been cooked wrong...");
+        phrases.add("My compliments to the chef!");
         return String.join(",", phrases);
     }
 
@@ -36,6 +40,8 @@ public interface FoodieConfig extends Config
         List<String> phrases = new ArrayList<>();
         phrases.add("Cheers boys!");
         phrases.add("*smash* Bring me another!");
+        phrases.add("Bottoms up!");
+        phrases.add("I'll feel this one tomorrow.");
         return String.join(",", phrases);
     }
 
