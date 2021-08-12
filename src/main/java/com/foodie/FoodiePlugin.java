@@ -31,6 +31,8 @@ public class FoodiePlugin extends Plugin
 
     private Map<String, String> foodToPhrases = new HashMap<>();
 
+    private String lastFoodEaten = "";
+
     @Override
     protected void startUp() throws Exception
     {
@@ -59,17 +61,24 @@ public class FoodiePlugin extends Plugin
 
             if (config.randomize()) {
                 if (isDrink(chatMessage)) {
-                    phrases.addAll(Arrays.asList(config.drinkPhrases().split(",")));
+                    phrases.addAll(Arrays.asList(config.drinkPhrases().split(FoodieConfig.DELIMITER)));
                 }
                 else if(isFood(chatMessage)) {
-                    phrases.addAll(Arrays.asList(config.foodPhrases().split(",")));
+                    phrases.addAll(Arrays.asList(config.foodPhrases().split(FoodieConfig.DELIMITER)));
                 }
+            }
+
+            //Override phrases with the picky eater phrases
+            if (lastFoodEaten.equals(chatMessage.getMessage()) && config.pickyEater()) {
+                phrases.clear();
+                phrases.addAll(Arrays.asList(config.pickyEaterPhrases().split(FoodieConfig.DELIMITER)));
             }
 
             if (phrases.isEmpty()) {
                 return;
             }
 
+            lastFoodEaten = chatMessage.getMessage();
             client.getLocalPlayer().setOverheadText(phrases.get(new Random().nextInt(phrases.size())));
             client.getLocalPlayer().setOverheadCycle(120);
             return;
@@ -95,11 +104,29 @@ public class FoodiePlugin extends Plugin
     private void updateFoodToPhrasesMap() {
 
         foodToPhrases.clear();
+        foodToPhrases = initFoodToPhrases();
 
         if (config.foodToPhrases() != null && !config.foodToPhrases().isEmpty()) {
             Type mapType = new TypeToken<Map<String, String>>() {}.getType();
             foodToPhrases.putAll(new Gson().fromJson(config.foodToPhrases(), mapType));
         }
+    }
+
+    /*
+     * The common food to phrase map.
+     * It's hidden in this class to provide easter eggs for users to find.
+     * The phrase can be overwritten by the Food:Phrases config.
+     */
+    private Map<String, String> initFoodToPhrases() {
+
+        Map<String, String> foodToPhrases = new HashMap<>();
+        foodToPhrases.put("manta ray", "This one's for my boy Steve Irwin!");
+        foodToPhrases.put("Wizard's Mind Bomb", "Wimbly bimbly, my brain now thinks nimbly!");
+        foodToPhrases.put("lobster", "Bleh! Prisoner food!");
+        foodToPhrases.put("purple sweet", "Ooo, piece of candy!");
+        foodToPhrases.put("meat", "Bleh! It's raw!");
+
+        return foodToPhrases;
     }
 
     private boolean isDrink(ChatMessage message) {
