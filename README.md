@@ -1,4 +1,4 @@
-#Configuration
+# Configuration
 
 ![Foodie Config](images/FoodieConfig.PNG)
 ## Food phrases
